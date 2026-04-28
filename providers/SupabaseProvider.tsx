@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { useSession } from "@clerk/nextjs";
+import { useAuthSession } from "@/lib/auth";
 
 type SupabaseContext = {
   supabase: SupabaseClient | null;
@@ -18,15 +18,23 @@ export default function SupabaseProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { session } = useSession();
+  const { session } = useAuthSession();
   const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!session) return;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey || !session) {
+      setSupabase(null);
+      setIsLoaded(true);
+      return;
+    }
+
     const client = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      supabaseUrl,
+      supabaseAnonKey,
       {
         accessToken: () => session?.getToken(),
       }

@@ -1,13 +1,13 @@
 "use client";
 
 import { boardDataService, boardService } from "@/lib/services";
+import { useAuthUser } from "@/lib/auth";
 import { Board } from "@/lib/supabase/models";
 import { useSupabase } from "@/providers/SupabaseProvider";
-import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
 export function useBoards() {
-  const { user } = useUser();
+  const { user } = useAuthUser();
   const { supabase, isLoaded } = useSupabase();
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,8 +16,13 @@ export function useBoards() {
   useEffect(() => {
     if (user && isLoaded && supabase) {
       loadBoards();
+      return;
     }
-  }, [user, isLoaded]);
+
+    if (isLoaded) {
+      setLoading(false);
+    }
+  }, [user, isLoaded, supabase]);
 
   async function loadBoards() {
     if (!user) return;

@@ -6,14 +6,14 @@ import {
   columnService,
   taskService,
 } from "@/lib/services";
+import { useAuthUser } from "@/lib/auth";
 import { Board, ColumnWithTasks, Task } from "@/lib/supabase/models";
 import { useSupabase } from "@/providers/SupabaseProvider";
-import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
 export function useBoard(boardId: string) {
   const { supabase, isLoaded } = useSupabase();
-  const { user } = useUser();
+  const { user } = useAuthUser();
 
   const [board, setBoard] = useState<Board | null>(null);
   const [columns, setColumns] = useState<ColumnWithTasks[]>([]);
@@ -23,8 +23,13 @@ export function useBoard(boardId: string) {
   useEffect(() => {
     if (boardId && isLoaded && supabase) {
       loadBoard();
+      return;
     }
-  }, [boardId, isLoaded]);
+
+    if (isLoaded) {
+      setLoading(false);
+    }
+  }, [boardId, isLoaded, supabase]);
 
   async function loadBoard() {
     if (!boardId) return;
@@ -132,8 +137,6 @@ export function useBoard(boardId: string) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to move task.");
       // Rollback UI to previous state
-      console.log("columns", columns);
-      console.log("prev", prevColumns);
       setColumns(prevColumns);
     }
   }

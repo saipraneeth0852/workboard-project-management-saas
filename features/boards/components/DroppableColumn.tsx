@@ -11,7 +11,7 @@ import { useState } from "react";
 interface DroppableColumnProps {
   column: ColumnWithTasks;
   children: React.ReactNode;
-  onCreateTask: (task: any) => Promise<void>;
+  onCreateTask: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
   onEditColumn: (column: ColumnWithTasks) => void;
   onDeleteColumn: (columnId: string) => void;
 }

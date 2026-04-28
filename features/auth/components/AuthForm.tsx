@@ -1,4 +1,5 @@
 import { SignIn, SignUp } from "@clerk/nextjs";
+import { isClerkConfigured } from "@/lib/auth";
 
 interface AuthFormProps {
   mode: "sign-in" | "sign-up";
@@ -36,18 +37,26 @@ export default function AuthForm({
           <p className="mt-2 text-sm text-gray-600">{subtitle}</p>
         </div>
         <div className="flex justify-center">
-          {mode === "sign-in" ? (
-            <SignIn
-              appearance={commonAppearance}
-              redirectUrl={redirectUrl}
-              signUpUrl={alternateUrl}
-            />
+          {!isClerkConfigured ? (
+            <div className="rounded-lg border bg-white p-6 text-center text-sm text-gray-600">
+              Configure Clerk environment variables to enable authentication.
+            </div>
           ) : (
-            <SignUp
-              appearance={commonAppearance}
-              redirectUrl={redirectUrl}
-              signInUrl={alternateUrl}
-            />
+            <>
+              {mode === "sign-in" ? (
+                <SignIn
+                  appearance={commonAppearance}
+                  redirectUrl={redirectUrl}
+                  signUpUrl={alternateUrl}
+                />
+              ) : (
+                <SignUp
+                  appearance={commonAppearance}
+                  redirectUrl={redirectUrl}
+                  signInUrl={alternateUrl}
+                />
+              )}
+            </>
           )}
         </div>
       </div>

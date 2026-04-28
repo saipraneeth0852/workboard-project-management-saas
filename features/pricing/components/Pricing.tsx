@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "@/components/layout/Navbar";
 import { PricingTable } from "@clerk/nextjs";
+import { isClerkConfigured } from "@/lib/auth";
 
 export default function Pricing() {
   return (
@@ -16,7 +17,13 @@ export default function Pricing() {
           </p>
         </div>
         <div className="max-w-5xl mx-auto">
-          <PricingTable newSubscriptionRedirectUrl="/dashboard" />
+          {isClerkConfigured ? (
+            <PricingTable newSubscriptionRedirectUrl="/dashboard" />
+          ) : (
+            <div className="rounded-lg border bg-white p-8 text-center text-gray-600">
+              Configure Clerk to enable subscription pricing locally.
+            </div>
+          )}
         </div>
       </div>
     </div>

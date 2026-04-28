@@ -14,7 +14,7 @@ import { SortableTask } from "./SortableTask";
 interface BoardColumnsProps {
   columns: ColumnWithTasks[];
   loading: boolean;
-  onCreateTask: (task: any) => Promise<void>;
+  onCreateTask: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
   onEditColumn: (column: ColumnWithTasks) => void;
   onDeleteColumn: (columnId: string) => void;
   onDeleteTask: (taskId: string) => void;

@@ -1,6 +1,7 @@
 "use client";
 
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
+import { isClerkConfigured, useAuthUser } from "@/lib/auth";
 import {
   ArrowLeft,
   ArrowRight,
@@ -30,7 +31,7 @@ const Navbar = ({
   filterCount,
   className,
 }: NavbarProps) => {
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn, user } = useAuthUser();
   const pathname = usePathname();
 
   const isDashboardPage = pathname === "/dashboard";
@@ -50,7 +51,7 @@ const Navbar = ({
             </div>
           </Link>
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <UserButton />
+            {isClerkConfigured ? <UserButton /> : null}
           </div>
         </div>
       </header>
@@ -116,7 +117,7 @@ const Navbar = ({
                   )}
                 </Button>
               )}
-              <UserButton />
+              {isClerkConfigured ? <UserButton /> : null}
             </div>
           </div>
           <div className="flex sm:hidden mt-4 justify-center items-center space-x-1 sm:space-x-2 min-w-0">
@@ -175,23 +176,31 @@ const Navbar = ({
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link href="/sign-in">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs sm:text-sm cursor-pointer"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/sign-up">
-                  <Button
-                    size="sm"
-                    className="text-xs sm:text-sm cursor-pointer"
-                  >
-                    Sign Up
-                  </Button>
-                </Link>
+                {isClerkConfigured ? (
+                  <>
+                    <Link href="/sign-in">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs sm:text-sm cursor-pointer"
+                      >
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link href="/sign-up">
+                      <Button
+                        size="sm"
+                        className="text-xs sm:text-sm cursor-pointer"
+                      >
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <span className="text-xs sm:text-sm text-gray-500">
+                    Add Clerk env vars to enable authentication
+                  </span>
+                )}
               </div>
             )}
           </div>

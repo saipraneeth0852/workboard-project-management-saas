@@ -5,21 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+type BoardFilters = {
+  search: string;
+  dateRange: {
+    start: string | null;
+    end: string | null;
+  };
+  taskCount: {
+    min: number | null;
+    max: number | null;
+  };
+};
+
 interface FilterDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  filters: {
-    search: string;
-    dateRange: {
-      start: string | null;
-      end: string | null;
-    };
-    taskCount: {
-      min: number | null;
-      max: number | null;
-    };
-  };
-  onFiltersChange: (filters: any) => void;
+  filters: BoardFilters;
+  onFiltersChange: React.Dispatch<React.SetStateAction<BoardFilters>>;
   onClearFilters: () => void;
 }
 
@@ -45,7 +47,7 @@ export function FilterDialog({
             placeholder="Search board titles..."
             value={filters.search}
             onChange={(e) =>
-              onFiltersChange((prev: any) => ({
+              onFiltersChange((prev) => ({
                 ...prev,
                 search: e.target.value,
               }))
@@ -61,7 +63,7 @@ export function FilterDialog({
                 type="date"
                 value={filters.dateRange.start ?? ""}
                 onChange={(e) =>
-                  onFiltersChange((prev: any) => ({
+                  onFiltersChange((prev) => ({
                     ...prev,
                     dateRange: {
                       ...prev.dateRange,
@@ -77,7 +79,7 @@ export function FilterDialog({
                 type="date"
                 value={filters.dateRange.end ?? ""}
                 onChange={(e) =>
-                  onFiltersChange((prev: any) => ({
+                  onFiltersChange((prev) => ({
                     ...prev,
                     dateRange: {
                       ...prev.dateRange,
@@ -100,7 +102,7 @@ export function FilterDialog({
                 min="0"
                 placeholder="Min tasks"
                 onChange={(e) =>
-                  onFiltersChange((prev: any) => ({
+                  onFiltersChange((prev) => ({
                     ...prev,
                     taskCount: {
                       ...prev.taskCount,
@@ -118,7 +120,7 @@ export function FilterDialog({
                 min="0"
                 placeholder="Max tasks"
                 onChange={(e) =>
-                  onFiltersChange((prev: any) => ({
+                  onFiltersChange((prev) => ({
                     ...prev,
                     taskCount: {
                       ...prev.taskCount,
